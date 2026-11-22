@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="km">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>គណនាថ្លៃផ្ញើរយានជំនិះ</title>
+    <style>
+         :root {
+            --bg: #fff;
+            --fg: #111;
+            --line: #111;
+            --btn: #111;
+            --btnfg: #fff;
+            color-scheme: light;
+            box-sizing: border-box;
+            padding-top: env(safe-area-inset-top, 0px);
+            padding-bottom: env(safe-area-inset-bottom, 0px)
+        }
+        
+        @media (prefers-color-scheme:dark) {
+             :root:not([data-theme="light"]) {
+                --bg: #111;
+                --fg: #fff;
+                --line: #fff;
+                --btn: #fff;
+                --btnfg: #111;
+                color-scheme: dark
+            }
+        }
+        
+         :root[data-theme="dark"] {
+            --bg: #111;
+            --fg: #fff;
+            --line: #fff;
+            --btn: #fff;
+            --btnfg: #111;
+            color-scheme: dark
+        }
+        
+        * {
+            box-sizing: border-box
+        }
+        
+        body {
+            margin: 0;
+            padding: 16px;
+            background: var(--bg);
+            color: var(--fg);
+            font-family: sans-serif;
+        }
+        
+        .card {
+            max-width: 480px;
+            margin: 0 auto;
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 20px
+        }
+        
+        h1 {
+            font-size: 1.7rem;
+            text-align: center;
+            margin: 0 0 16px
+        }
+        
+        label {
+            display: block;
+            margin: 14px 0 6px;
+            font-weight: 600
+        }
+        
+        select,
+        input {
+            width: 100%;
+            min-width: 0;
+            height: 48px;
+            padding: 0 14px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--fg);
+            font: inherit;
+            -webkit-appearance: none;
+            appearance: none
+        }
+        
+        .unit {
+            position: relative
+        }
+        
+        .unit span {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700
+        }
+        
+        button {
+            width: 100%;
+            height: 48px;
+            margin-top: 20px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--btn);
+            color: var(--btnfg);
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="card">
+        <h1>គណនាថ្លៃផ្ញើរយានជំនិះ</h1>
+        <label for="v">ជ្រើសរើស យានជំនិះ:</label>
+        <select id="v">
+    <option value="car">ឡាន</option>
+    <option value="moto">ម៉ូតូ</option>
+  </select>
+        <label for="in">ម៉ោងចូល</label>
+        <input type="time" id="in">
+        <label for="out">ម៉ោងចេញ</label>
+        <input type="time" id="out">
+        <label for="r">ថ្លៃផ្ញើរ រៀល</label>
+        <div class="unit"><input id="r" readonly><span>៛</span></div>
+        <label for="d">ថ្លៃផ្ញើរ ដុល្លា</label>
+        <div class="unit"><input id="d" readonly><span>$</span></div>
+        <button id="go">គណនា</button>
+    </div>
+    <script>
+        var RATE_USD = 4000;
+        document.getElementById('go').onclick = function() {
+            var a = document.getElementById('in').value,
+                b = document.getElementById('out').value;
+            if (!a || !b) return;
+            var m = function(t) {
+                var p = t.split(':');
+                return +p[0] * 60 + +p[1]
+            };
+            var diff = m(b) - m(a);
+            if (diff < 0) diff += 1440;
+            var hours = Math.max(1, Math.ceil(diff / 60));
+            var R = {
+                moto: [200, 300],
+                car: [500, 1000]
+            }[document.getElementById('v').value];
+            var riel = Math.min(hours, 8) * R[0] + Math.max(hours - 8, 0) * R[1];
+            document.getElementById('r').value = riel.toLocaleString('en-US');
+            document.getElementById('d').value = (riel / RATE_USD).toFixed(2);
+        };
+    </script>
+</body>
+
+</html>
